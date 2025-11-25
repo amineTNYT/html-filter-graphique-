@@ -197,7 +197,6 @@
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
-            
             border-radius: 50%;
             background: #0ea5a4;
             cursor: pointer;
@@ -321,6 +320,58 @@
             margin-bottom: 6px;
         }
 
+        /* Watermark Styles */
+        .watermark {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .watermark-text {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .watermark-text:hover {
+            color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .creator-message {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            right: 0;
+            background: rgba(14, 165, 164, 0.9);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            transition: top 0.5s ease;
+        }
+        
+        .creator-message.show {
+            top: 0;
+        }
+        
+        .creator-message a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        
+        .creator-message a:hover {
+            color: #e0f7fa;
+        }
+
         @media(max-width:768px){
             .interactive-demo{grid-template-columns:1fr;gap:16px}
             .filters-section{grid-template-columns:1fr;gap:24px}
@@ -431,11 +482,10 @@
             </div>
 
             <div class="filter-examples">
-                <button class="filter-example" data-filter="grayscale" data-value="0%">grayscale   
+                <button class="filter-example" data-filter="grayscale" data-value="0%">grayscale    
                     (0%)</button>
-                <button class="filter-example" data-filter="grayscale" data-value="50%">grayscale    
-                    (50%)
-                </button>
+                <button class="filter-example" data-filter="grayscale" data-value="50%">grayscale   
+                    (50%)</button>
                 <button class="filter-example" data-filter="grayscale" data-value="100%">grayscale   
                     (100%)</button>
             </div>
@@ -637,6 +687,18 @@
             <p><span class="filter-badge">Browser Support</span> CSS filters are supported in all modern browsers, but always test across target browsers.</p>
         </div>
     </section>
+    
+    <!-- Watermark Footer -->
+    <footer class="watermark">
+        <div class="watermark-text" id="watermark">
+           Click here to learn more abou the creator
+        </div>
+    </footer>
+</div>
+
+<!-- Creator Message -->
+<div class="creator-message" id="creator-message">
+    Hey! This page was fully created by me. Make sure to visit my <a href="https://github.com/amineTNYT" target="_blank">GitHub page</a> and support me for more content!
 </div>
 
 <!-- Syntax Modal -->
@@ -734,6 +796,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const syntaxBtn = document.getElementById('show-syntax');
     const syntaxModal = document.getElementById('syntax-modal');
     const closeSyntax = document.getElementById('close-syntax');
+    const watermark = document.getElementById('watermark');
+    const creatorMessage = document.getElementById('creator-message');
     
     // Slider elements
     const blurSlider = document.getElementById('blur-slider');
@@ -912,6 +976,16 @@ document.addEventListener('DOMContentLoaded', function() {
             combinationsTriedElement.textContent = combinationsTried;
         }
     }
+    
+    // Watermark functionality
+    function showCreatorMessage() {
+        creatorMessage.classList.add('show');
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+            creatorMessage.classList.remove('show');
+        }, 5000);
+    }
 
     // Event listeners for filter buttons
     filterExamples.forEach(button => {
@@ -1081,6 +1155,9 @@ document.addEventListener('DOMContentLoaded', function() {
             syntaxModal.style.display = 'none';
         }
     });
+    
+    // Watermark click event
+    watermark.addEventListener('click', showCreatorMessage);
 
     // Initialize the page
     initializeActiveStates();
