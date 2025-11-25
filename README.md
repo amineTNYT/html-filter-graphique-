@@ -4,13 +4,13 @@ Démonstration interactive des filtres CSS incluant les effets de flou, niveaux 
 # Support Multilingue
 Ce repository contient plusieurs pages HTML présentant le même contenu dans différentes langues :
 
-Version française : Démonstration complète en français
+* Version française : Démonstration complète en français
 
-Version anglaise : Même démonstration interactive en anglais
+* Version anglaise : Même démonstration interactive en anglais
 
 Les deux versions conservent les mêmes fonctionnalités et la même interface intuitive.
 
-Fonctionnalités
+# Fonctionnalités
 Application en temps réel des filtres sur images et formes
 
 Affichage live du code CSS
