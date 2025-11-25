@@ -1,12 +1,25 @@
-# html-filter-graphique-
-Ce projet présente une démonstration interactive des filtres CSS(**blur**, **grayscale** et **invert**).
+# Description du Projet
+Démonstration interactive des filtres CSS incluant les effets de flou, niveaux de gris et inversion des couleurs. Testez les filtres en temps réel sur des images et formes géométriques, avec mise à jour automatique du code CSS.
 
-À travers une interface intuitive, explorez les effets de flou, de niveaux de gris et d'inversion des couleurs. Testez les filtres sur des images et formes, voyez le code se mettre à jour en temps réel, et combinez différents effets dans la zone de jeu. Un outil parfait pour apprendre et expérimenter avec les filtres ***CSS*** modernes.
+# Support Multilingue
+Ce repository contient plusieurs pages HTML présentant le même contenu dans différentes langues :
 
---
-Dans ce **repository**, vous trouverez plusieurs pages ***HTML*** présentant le même contenu éducatif sur les filtres**CSS**, mais dans différentes langues. Une page est entièrement en ***français***, tandis qu'une autre propose la même démonstration interactive en **anglais**. 
+Version française : Démonstration complète en français
 
-Chaque version conserve les mêmes fonctionnalités et la même interface intuitive pour explorer les effets de flou, niveaux de gris et inversion des couleurs.
+Version anglaise : Même démonstration interactive en anglais
 
+Les deux versions conservent les mêmes fonctionnalités et la même interface intuitive.
 
+Fonctionnalités
+Application en temps réel des filtres sur images et formes
+
+Affichage live du code CSS
+
+Zone de jeu pour combiner plusieurs effets
+
+Interface responsive et moderne
+
+Outil éducatif pour apprendre les filtres CSS
+
+Parfait pour les développeurs et designers souhaitant comprendre et expérimenter avec les effets visuels CSS.
 
