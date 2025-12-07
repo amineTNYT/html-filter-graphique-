@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1" />
+    <meta name="theme-color" content="#162033">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CSS Filters: Blur, Grayscale & Invert — Version Française</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}
+        body{
+            background:linear-gradient(135deg,#162033,#263747 60%,#2b2f36);
+            color:#f7f7f7;
+            min-height:100vh;padding:14px;line-height:1.5;
+        }
+        .container{max-width:1100px;margin:0 auto}
+
+        header{background:rgba(0,0,0,.28);padding:20px;border-radius:12px;text-align:center;margin-bottom:22px}
+        h1{font-size:1.8rem;margin-bottom:6px}
+        .subtitle{opacity:.95;font-size:0.98rem;max-width:860px;margin:0 auto}
+
+        .filters-section{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:24px}
+        .filter-card{background:rgba(0,0,0,.28);padding:16px;border-radius:12px;box-shadow:0 6px 12px rgba(0,0,0,.25);margin:0 4px}
+
+        h2{font-size:1.25rem;margin-bottom:12px;color:#63c7be;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:6px}
+
+        .demo-area{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+        .demo-item{text-align:center}
+        .demo-title{font-size:.8rem;margin-bottom:6px;color:#9bd6d0;font-weight:700}
+
+        .image-container{width:100%;height:120px;overflow:hidden;border-radius:8px;margin:0 auto 10px;position:relative;box-shadow:0 4px 8px rgba(0,0,0,.25)}
+        .demo-image{width:100%;height:100%;object-fit:cover;display:block;opacity:1;transition:opacity 360ms ease}
+
+        .loading-bar-container{position:absolute;left:0;bottom:0;width:100%;height:4px;background:rgba(255,255,255,.08);border-radius:0 0 6px 6px;overflow:hidden}
+        .loading-bar{height:100%;width:0;background:#e1645a;border-radius:0 0 6px 6px;transition:width 320ms linear}
+
+        .shape-container{display:flex;justify-content:center;align-items:center;height:120px;margin-bottom:10px;gap:12px}
+        .shape{width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;border-radius:8px;transition:transform 260ms ease;animation:scalePulse 2.4s infinite}
+        @keyframes scalePulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+        .square{background:#7b61b8;color:#fff}
+        .circle{background:#d9534f;border-radius:50%;color:#fff}
+
+        /* Styles améliorés pour les boutons */
+        .filter-examples{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;}
+        .filter-example{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:12px 8px;
+            border-radius:8px;
+            border:1px solid rgba(255,255,255,.15);
+            background:rgba(255,255,255,.08);
+            color:#f0f0f0;
+            font-weight:600;
+            cursor:pointer;
+            text-align:center;
+            font-size:0.85rem;
+            transition:all .18s ease;
+            min-height:44px;
+            min-width:80px;
+            box-shadow:0 2px 4px rgba(0,0,0,.2);
+            line-height:1.2;
+            word-break: break-word;
+        }
+        .filter-example:hover{
+            background:rgba(255,255,255,.15);
+            transform:translateY(-3px);
+            box-shadow:0 6px 16px rgba(0,0,0,.25);
+        }
+        .filter-example:active{
+            transform:translateY(-1px);
+            box-shadow:0 3px 8px rgba(0,0,0,.2);
+        }
+        .filter-example.active-filter{
+            background:#0ea5a4;
+            color:#fff;
+            box-shadow:0 8px 18px rgba(14,165,164,.25);
+            border-color:transparent;
+        }
+
+        .code-examples{background:rgba(0,0,0,.5);padding:12px;border-radius:6px;margin-top:14px;font-family:monospace;white-space:pre-wrap;font-size:.85rem;line-height:1.4;border:1px solid rgba(255,255,255,.04);transition:all 0.3s ease;}
+
+        .color-change-btn{
+            background:rgba(255,255,255,.08);
+            color:#f0f0f0;
+            border:1px solid rgba(255,255,255,.15);
+            padding:12px 14px;
+            border-radius:8px;
+            font-weight:600;
+            cursor:pointer;
+            width:100%;
+            transition:all .18s ease;
+            margin-top:8px;
+            min-height:44px;
+            font-size:.9rem;
+            box-shadow:0 2px 4px rgba(0,0,0,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .color-change-btn:hover{
+            background:rgba(255,255,255,.15);
+            transform:translateY(-3px);
+            box-shadow:0 6px 16px rgba(0,0,0,.25);
+        }
+        .color-change-btn:active{
+            transform:translateY(-1px);
+            box-shadow:0 3px 8px rgba(0,0,0,.2);
+        }
+
+        .interactive-section{background:rgba(0,0,0,.28);border-radius:12px;padding:16px;margin-top:18px}
+
+        .interactive-demo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+        .interactive-image-container{width:100%;height:180px;overflow:hidden;border-radius:8px;position:relative;box-shadow:0 8px 18px rgba(0,0,0,.28)}
+        #interactive-image{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 360ms ease}
+
+        .interactive-loading-bar{position:absolute;left:0;bottom:0;width:100%;height:6px;background:rgba(255,255,255,.06);border-radius:0 0 8px 8px;overflow:hidden}
+        .interactive-progress{height:100%;width:0;background:#e1645a;border-radius:0 0 8px 8px;transition:width 320ms linear}
+
+        .interactive-shapes{display:flex;justify-content:space-around;align-items:center;height:180px;background:rgba(255,255,255,.04);border-radius:8px;padding:12px;margin-bottom:12px}
+        .interactive-shape{width:66px;height:66px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.7rem;border-radius:8px;transition:transform .22s ease;animation:scalePulse 2.4s infinite}
+        .interactive-square{background:#3498db;color:#fff}
+        .interactive-circle{background:#e74c3c;color:#fff;border-radius:50%}
+        .interactive-triangle{width:0;height:0;border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:52px solid #2ecc71;background:transparent !important}
+
+        .css-output{background:rgba(0,0,0,.5);border-radius:8px;padding:12px;margin-top:12px;font-family:monospace;white-space:pre-wrap;border:1px solid rgba(255,255,255,.04);font-size:.86rem}
+
+        .syntax-btn{
+            background:#0ea5a4;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            padding:14px 20px;
+            display:block;
+            margin:18px auto 0;
+            font-weight:600;
+            cursor:pointer;
+            box-shadow:0 6px 14px rgba(0,0,0,.18);
+            transition:all .2s ease;
+            min-height:48px;
+            width:100%;
+            max-width:300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .syntax-btn:hover{
+            background:#0d9c9b;
+            transform:translateY(-3px);
+            box-shadow:0 8px 16px rgba(0,0,0,.25);
+        }
+        .syntax-btn:active{
+            transform:translateY(-1px);
+        }
+
+        .explanation{margin-top:20px;background:rgba(0,0,0,.28);border-radius:12px;padding:16px}
+
+        .filter-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+        .info-card{background:rgba(0,0,0,.18);padding:12px;border-radius:8px;border-left:3px solid #63c7be}
+        .info-card h3{color:#9bd6d0;margin-bottom:8px;font-size:1rem}
+        .info-card p{margin-bottom:8px;font-size:.87rem}
+
+        .filter-resume{margin-top:18px;background:rgba(0,0,0,.32);border-radius:8px;padding:12px}
+        .resume-title{color:#63c7be;font-size:1.1rem;margin-bottom:10px;border-bottom:2px solid rgba(255,255,255,.04);padding-bottom:8px}
+
+        /* Nouveaux éléments */
+        .filter-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .slider-label {
+            min-width: 100px;
+            font-size: 0.9rem;
+            color: #9bd6d0;
+        }
+        
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255,255,255,.1);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #0ea5a4;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,.3);
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #f0f0f0;
+        }
+        
+        .code-highlight {
+            color: #63c7be;
+            font-weight: bold;
+        }
+        
+        .filter-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(14,165,164,.2);
+            color: #63c7be;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .filter-combination {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(0,0,0,.2);
+            border-radius: 8px;
+            border-left: 3px solid #7b61b8;
+        }
+        
+        .combination-title {
+            font-size: 0.9rem;
+            color: #9bd6d0;
+            margin-bottom: 8px;
+        }
+        
+        .combination-code {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: rgba(0,0,0,.3);
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+        }
+        
+        .filter-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .gallery-item {
+            background: rgba(0,0,0,.2);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+        
+        .gallery-caption {
+            padding: 8px;
+            font-size: 0.8rem;
+            text-align: center;
+            background: rgba(0,0,0,.3);
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(0,0,0,.2);
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #63c7be;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9bd6d0;
+        }
+        
+        .tip-box {
+            background: rgba(14,165,164,.1);
+            border-left: 3px solid #0ea5a4;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .tip-title {
+            font-weight: bold;
+            color: #63c7be;
+            margin-bottom: 6px;
+        }
+
+        /* Styles du filigrane */
+        .watermark {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .watermark-text {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .watermark-text:hover {
+            color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .creator-message {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            right: 0;
+            background: rgba(14, 165, 164, 0.9);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            transition: top 0.5s ease;
+        }
+        .creator{ color:rgb(156, 220, 254)
+                }
+        
+        .creator-message.show {
+            top: 0;
+        }
+        
+        .creator-message a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        
+        .creator-message a:hover {
+            color: #e0f7fa;
+        }
+
+        @media(max-width:768px){
+            .interactive-demo{grid-template-columns:1fr;gap:16px}
+            .filters-section{grid-template-columns:1fr;gap:24px}
+            .demo-area{grid-template-columns:1fr;gap:16px}
+            .filter-examples{grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+            .filter-card{padding:20px}
+            h1{font-size:1.6rem}
+            .subtitle{font-size:0.95rem}
+            .filter-gallery{grid-template-columns: repeat(2, 1fr);}
+        }
+        @media(max-width:480px){
+            .filter-examples{grid-template-columns:repeat(2,1fr);gap:10px}
+            .demo-area{grid-template-columns:1fr}
+            body{padding:12px}
+            .filter-example{font-size:0.8rem;padding:10px 6px;min-height:44px;margin:4px}
+            .color-change-btn{padding:12px 14px;font-size:0.9rem;min-height:44px}
+            h1{font-size:1.5rem}
+            h2{font-size:1.3rem;margin-bottom:14px}
+            .filter-gallery{grid-template-columns: 1fr;}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Filtres CSS : Blur, Grayscale & Invert</h1>
+        <p class="subtitle">Cliquez sur les exemples pour appliquer des filtres aux images et formes. Voir le code se mettre à jour en temps réel !</p>
+    </header>
+
+    <div class="filters-section">
+        <div class="filter-card">
+            <h2>Blur Filter</h2>
+            <div class="demo-area">
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Image</div>
+                    <div class="image-container">
+                        <!-- Image réelle avec fallback SVG -->
+                        <img class="demo-image blur-demo" 
+                             src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=500&h=300&q=80" 
+                             alt="Paysage de montagne"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDUwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMyNjM3NDciLz48cGF0aCBkPSJNMTUwIDc1QzIwMCA1MCAyNTAgODUgMzAwIDYwQzM1MCAzNSA0MDAgNzUgNDUwIDUwIiBzdHJva2U9IiM2M2M3YmUiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxjaXJjbGUgY3g9IjEyMCIgY3k9IjE0MCIgcj0iMjAiIGZpbGw9IiM3YjYxYjgiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSIjZDk1MzRmIi8+PHRleHQgeD0iMjUwIiB5PSIyMjAiIGZpbGw9IiNmZmZmZmYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+TW91bnRhaW4gTGFuZHNjYXBlPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="loading-bar-container">
+                            <div class="loading-bar blur-loading" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Formes</div>
+                    <div class="shape-container">
+                        <div class="shape square blur-demo">Carré</div>
+                        <div class="shape circle blur-demo">Cercle</div>
+                    </div>
+                    <button class="color-change-btn" data-shapes="blur">Changer les Couleurs</button>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="slider-container">
+                    <span class="slider-label">Blur Amount:</span>
+                    <input type="range" min="0" max="20" value="0" class="slider" id="blur-slider">
+                    <span class="slider-value" id="blur-value">0px</span>
+                </div>
+            </div>
+
+            <div class="filter-examples">
+                <button class="filter-example" data-filter="blur" data-value="0px">blur(0px)</button>
+                <button class="filter-example" data-filter="blur" data-value="3px">blur(3px)</button>
+                <button class="filter-example" data-filter="blur" data-value="8px">blur(8px)</button>
+            </div>
+
+            <div class="code-examples" id="blur-code">
+/* Appliquer un blur aux éléments */
+.element {
+  filter: blur(0px);
+}
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-title">Astuce Pro</div>
+                <p>Utilisez les effets de blur pour créer de la profondeur ou attirer l'attention sur des éléments spécifiques. Des valeurs plus élevées créent des effets de blur plus prononcés.</p>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <h2>Grayscale Filter</h2>
+            <div class="demo-area">
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Image</div>
+                    <div class="image-container">
+                        <img class="demo-image grayscale-demo" 
+                             src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=500&h=300&q=80" 
+                             alt="Paysage de montagne"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDUwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMyNjM3NDciLz48cGF0aCBkPSJNMTUwIDc1QzIwMCA1MCAyNTAgODUgMzAwIDYwQzM1MCAzNSA0MDAgNzUgNDUwIDUwIiBzdHJva2U9IiM2M2M3YmUiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxjaXJjbGUgY3g9IjEyMCIgY3k9IjE0MCIgcj0iMjAiIGZpbGw9IiM3YjYxYjgiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSIjZDk1MzRmIi8+PHRleHQgeD0iMjUwIiB5PSIyMjAiIGZpbGw9IiNmZmZmZmYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+TW91bnRhaW4gTGFuZHNjYXBlPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="loading-bar-container">
+                            <div class="loading-bar grayscale-loading" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Formes</div>
+                    <div class="shape-container">
+                        <div class="shape square grayscale-demo">Carré</div>
+                        <div class="shape circle grayscale-demo">Cercle</div>
+                    </div>
+                    <button class="color-change-btn" data-shapes="grayscale">Changer les Couleurs</button>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="slider-container">
+                    <span class="slider-label">Grayscale:</span>
+                    <input type="range" min="0" max="100" value="0" class="slider" id="grayscale-slider">
+                    <span class="slider-value" id="grayscale-value">0%</span>
+                </div>
+            </div>
+
+            <div class="filter-examples">
+                <button class="filter-example" data-filter="grayscale" data-value="0%">grayscale(0%)</button>
+                <button class="filter-example" data-filter="grayscale" data-value="50%">grayscale(50%)</button>
+                <button class="filter-example" data-filter="grayscale" data-value="100%">grayscale(100%)</button>
+            </div>
+
+            <div class="code-examples" id="grayscale-code">
+/* Appliquer grayscale aux éléments */
+.element { 
+  filter: grayscale(0%); 
+}
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-title">Astuce Pro</div>
+                <p>Grayscale est parfait pour créer des effets vintage ou attirer l'attention sur des éléments colorés en désaturant les autres.</p>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <h2>Invert Filter</h2>
+            <div class="demo-area">
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Image</div>
+                    <div class="image-container">
+                        <img class="demo-image invert-demo" 
+                             src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=500&h=300&q=80" 
+                             alt="Paysage de montagne"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDUwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMyNjM3NDciLz48cGF0aCBkPSJNMTUwIDc1QzIwMCA1MCAyNTAgODUgMzAwIDYwQzM1MCAzNSA0MDAgNzUgNDUwIDUwIiBzdHJva2U9IiM2M2M3YmUiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxjaXJjbGUgY3g9IjEyMCIgY3k9IjE0MCIgcj0iMjAiIGZpbGw9IiM3YjYxYjgiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSIjZDk1MzRmIi8+PHRleHQgeD0iMjUwIiB5PSIyMjAiIGZpbGw9IiNmZmZmZmYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+TW91bnRhaW4gTGFuZHNjYXBlPC90ZXh0Pjwvc3ZnPg=='">
+                        <div class="loading-bar-container">
+                            <div class="loading-bar invert-loading" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Exemple avec Formes</div>
+                    <div class="shape-container">
+                        <div class="shape square invert-demo">Carré</div>
+                        <div class="shape circle invert-demo">Cercle</div>
+                    </div>
+                    <button class="color-change-btn" data-shapes="invert">Changer les Couleurs</button>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="slider-container">
+                    <span class="slider-label">Invert Amount:</span>
+                    <input type="range" min="0" max="100" value="0" class="slider" id="invert-slider">
+                    <span class="slider-value" id="invert-value">0%</span>
+                </div>
+            </div>
+
+            <div class="filter-examples">
+                <button class="filter-example" data-filter="invert" data-value="0%">invert(0%)</button>
+                <button class="filter-example" data-filter="invert" data-value="50%">invert(50%)</button>
+                <button class="filter-example" data-filter="invert" data-value="100%">invert(100%)</button>
+            </div>
+
+            <div class="code-examples" id="invert-code">
+/* Appliquer invert aux éléments */
+.element { 
+  filter: invert(0%); 
+}
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-title">Astuce Pro</div>
+                <p>Invert crée des effets de type négatif. À 100%, il inverse complètement les couleurs, ce qui peut créer un contraste visuel frappant.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="interactive-section">
+        <h2>Terrain de jeu interactif</h2>
+        <p>Appliquez des filtres à la fois à une image et à des formes. Combinez plusieurs filtres pour des effets uniques !</p>
+
+        <div class="interactive-demo">
+            <div>
+                <div class="interactive-image-container">
+                    <img id="interactive-image" 
+                         src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&h=450&q=80" 
+                         alt="Paysage de montagne"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgdmlld0JveD0iMCAwIDgwMCA0NTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiMyNjM3NDciLz48cGF0aCBkPSJNMTUwIDk1QzIyMCA2MCAyOTAgMTA1IDM2MCA3MEM0MzAgMzUgNTAwIDg1IDU3MCA1MCIgc3Ryb2tlPSIjNjNjN2JlIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIxMjAiIGN5PSIxODAiIHI9IjMwIiBmaWxsPSIjN2I2MWI4Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMjIwIiByPSI0NSIgZmlsbD0iI2Q5NTM0ZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjE1MCIgcj0iMzUiIGZpbGw9IiMzNDk4ZGIiLz48dGV4dCB4PSI0MDAiIHk9IjMwMCIgZmlsbD0iI2ZmZmZmZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4Ij5JbnRlcmFjdGl2ZSBMYW5kc2NhcGU8L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIzMzAiIGZpbGw9IiM5YmQ2ZDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+KHdpdGhvdXQgaW50ZXJuZXQsIFNWRyBpbWFnZSk8L3RleHQ+PC9zdmc+'">
+                    <div class="interactive-loading-bar">
+                        <div class="interactive-progress" id="interactive-progress" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="interactive-shapes">
+                    <div class="interactive-shape interactive-square">Carré</div>
+                    <div class="interactive-shape interactive-circle">Cercle</div>
+                    <div class="interactive-shape interactive-triangle">Triangle</div>
+                </div>
+                <button class="color-change-btn" id="change-all-colors">Changer Toutes les Couleurs</button>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <div class="slider-container">
+                <span class="slider-label">Blur:</span>
+                <input type="range" min="0" max="20" value="0" class="slider" id="interactive-blur-slider">
+                <span class="slider-value" id="interactive-blur-value">0px</span>
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Grayscale:</span>
+                <input type="range" min="0" max="100" value="0" class="slider" id="interactive-grayscale-slider">
+                <span class="slider-value" id="interactive-grayscale-value">0%</span>
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Invert:</span>
+                <input type="range" min="0" max="100" value="0" class="slider" id="interactive-invert-slider">
+                <span class="slider-value" id="interactive-invert-value">0%</span>
+            </div>
+        </div>
+
+        <div class="filter-examples" style="margin-top:12px">
+            <button class="filter-example" data-filter="all" data-value="blur(5px)">Add Blur</button>
+            <button class="filter-example" data-filter="all" data-value="grayscale(100%)">Add Grayscale</button>
+            <button class="filter-example" data-filter="all" data-value="invert(100%)">Add Invert</button>
+            <button class="filter-example" data-filter="all" data-value="none">Reset All</button>
+        </div>
+
+        <div class="filter-combination">
+            <div class="combination-title">Current Filter Combination:</div>
+            <div class="combination-code" id="combination-code">filter: none;</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+            <div class="css-output" id="css-output">filter: none;</div>
+            <button id="reset-playground" class="color-change-btn" style="max-width:180px">Réinitialiser</button>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="active-filters">0</div>
+                <div class="stat-label">Filtres actifs</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="filter-intensity">0%</div>
+                <div class="stat-label">Intensité des filtres</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="combinations-tried">0</div>
+                <div class="stat-label">Combinaisons essayées</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-gallery">
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Original" 
+                 style="filter: none;"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPk9yaWdpbmFsPC90ZXh0Pjwvc3ZnPg=='">
+            <div class="gallery-caption">Original</div>
+        </div>
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Blurred" 
+                 style="filter: blur(3px)"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkJsdXJyZWQ8L3RleHQ+PC9zdmc+'">
+            <div class="gallery-caption">Blurred</div>
+        </div>
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Grayscale" 
+                 style="filter: grayscale(100%)"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkdyYXlzY2FsZTwvdGV4dD48L3N2Zz4='">
+            <div class="gallery-caption">Grayscale</div>
+        </div>
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Inverted" 
+                 style="filter: invert(100%)"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkludmVydGVkPC90ZXh0Pjwvc3ZnPg=='">
+            <div class="gallery-caption">Inverted</div>
+        </div>
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Combined" 
+                 style="filter: blur(2px) grayscale(50%)"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkJsdXIgKyBHcmF5c2NhbGU8L3RleHQ+PC9zdmc+'">
+            <div class="gallery-caption">Blur + Grayscale</div>
+        </div>
+        <div class="gallery-item">
+            <img class="gallery-image" 
+                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80" 
+                 alt="Combined" 
+                 style="filter: blur(2px) invert(50%)"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyNjM3NDciLz48Y2lyY2xlIGN4PSI4MCIgY3k9IjYwIiByPSIyNSIgZmlsbD0iIzdiNjFiOCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjkwIiByPSIzNSIgZmlsbD0iI2Q5NTM0ZiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmaWxsPSIjZmZmZmZmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkJsdXIgKyBJbnZlcnQ8L3RleHQ+PC9zdmc+'">
+            <div class="gallery-caption">Blur + Invert</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button class="syntax-btn" id="show-syntax">Afficher la syntaxe CSS complète des filtres</button>
+    </div>
+
+    <section class="explanation">
+        <h2>Comprendre les Filtres CSS</h2>
+        <div class="filter-info">
+            <div class="info-card">
+                <h3>blur()</h3>
+                <p>Applique un flou gaussien. Paramètre en pixels (ex : blur(5px)). Des valeurs plus élevées créent plus de flou.</p>
+            </div>
+            <div class="info-card">
+                <h3>grayscale()</h3>
+                <p>Convertit en niveaux de gris. Valeur en pourcentage (0% à 100%). À 100%, l'image devient complètement en niveaux de gris.</p>
+            </div>
+            <div class="info-card">
+                <h3>invert()</h3>
+                <p>Inverse les couleurs. Valeur en pourcentage (0% à 100%). À 100%, les couleurs sont complètement inversées.</p>
+            </div>
+            <div class="info-card">
+                <h3>Combiner les Filtres</h3>
+                <p>Listez les fonctions dans l'ordre. L'ordre change le résultat (ex : blur() puis grayscale() vs grayscale() puis blur()).</p>
+            </div>
+        </div>
+        
+        <div class="filter-resume">
+            <div class="resume-title">Résumé des propriétés des filtres CSS</div>
+            <p>Les filtres CSS permettent d'appliquer des effets visuels aux éléments. Ils sont couramment utilisés avec les images mais fonctionnent sur n'importe quel élément HTML. Les filtres peuvent être combinés en listant plusieurs fonctions de filtre séparées par des espaces.</p>
+            <p><span class="filter-badge">Astuce Performance</span> Les filtres peuvent affecter les performances, surtout sur les appareils mobiles. Utilisez-les avec modération.</p>
+            <p><span class="filter-badge">Support Navigateur</span> Les filtres CSS sont supportés dans tous les navigateurs modernes, mais testez toujours sur les navigateurs cibles.</p>
+        </div>
+    </section>
+    
+    <!-- Pied de page avec filigrane -->
+    <footer class="watermark">
+        <div class="watermark-text" id="watermark">
+           <p class="creator">Cliquez ici pour en savoir plus sur le créateur</p>
+        </div>
+    </footer>
+</div>
+
+<!-- Message du créateur -->
+<div class="creator-message" id="creator-message">
+    Hey ! Cette page a été entièrement créée par moi. Assurez-vous de visiter ma <a href="https://github.com/amineTNYT" target="_blank">page GitHub</a> et de me soutenir pour plus de contenu !
+</div>
+
+<!-- Modal de syntaxe -->
+<div class="syntax-modal" id="syntax-modal" style="display:none;z-index:10000;position:fixed;inset:0;background:rgba(0,0,0,.85);overflow:auto;padding:20px">
+    <div class="syntax-content" style="max-width:900px;margin:30px auto;border-radius:12px;padding:22px;background:linear-gradient(135deg,#2c3e50,#34495e);box-shadow:0 10px 30px rgba(0,0,0,.5)">
+        <button id="close-syntax" class="close-btn" aria-label="fermer" style="position:absolute;right:26px;top:18px;background:none;border:none;color:#fff;font-size:22px;cursor:pointer">&times;</button>
+        <h2 style="color:#fff;margin-bottom:12px">Syntaxe complète des filtres CSS & notations</h2>
+        <div style="background:rgba(0,0,0,.5);padding:12px;border-radius:8px;color:#fff;font-family:monospace;white-space:pre-wrap;line-height:1.5">
+/* Fonctions de filtre CSS */
+filter: none | [filter-function] | [filter-function-list];
+
+/* Fonctions de filtre individuelles */
+filter: blur(5px);
+filter: brightness(0.8);
+filter: contrast(200%);
+filter: drop-shadow(16px 16px 20px blue);
+filter: grayscale(50%);
+filter: invert(75%);
+filter: opacity(25%);
+filter: saturate(30%);
+
+/* Filtres multiples */
+filter: contrast(175%) brightness(80%) blur(3px);
+
+/* Avec URL (filtres SVG) */
+filter: url("filters.svg#filter-id");
+
+/* Valeurs globales */
+filter: inherit;
+filter: initial;
+filter: unset;
+
+/* Animer les filtres */
+@keyframes filter-animation {
+  0% { filter: blur(0px) grayscale(0%); }
+  50% { filter: blur(5px) grayscale(50%); }
+  100% { filter: blur(0px) grayscale(100%); }
+}
+
+.element {
+  animation: filter-animation 3s infinite;
+}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé - initialisation des filtres');
+    
+    // URLs d'images réelles d'Unsplash qui changent toutes les 6 secondes
+    const imageUrls = [
+        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&h=450&q=80', // Montagnes
+        'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&h=450&q=80', // Forêt
+        'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=800&h=450&q=80', // Nature
+        'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=800&h=450&q=80', // Lac
+        'https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=800&h=450&q=80',  // Paysage
+        'https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=800&h=450&q=80'   // Ciel
+    ];
+
+    // URLs pour les petites images (galerie)
+    const galleryImageUrls = [
+        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=300&h=200&q=80',
+        'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=300&h=200&q=80',
+        'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=300&h=200&q=80',
+        'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=300&h=200&q=80',
+        'https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=300&h=200&q=80',
+        'https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=300&h=200&q=80'
+    ];
+
+    // Image SVG de secours pour quand il n'y a pas d'internet
+    const fallbackSVG = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgdmlld0JveD0iMCAwIDgwMCA0NTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiMyNjM3NDciLz48cGF0aCBkPSJNMTUwIDk1QzIyMCA2MCAyOTAgMTA1IDM2MCA3MEM0MzAgMzUgNTAwIDg1IDU3MCA1MCIgc3Ryb2tlPSIjNjNjN2JlIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIxMjAiIGN5PSIxODAiIHI9IjMwIiBmaWxsPSIjN2I2MWI4Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMjIwIiByPSI0NSIgZmlsbD0iI2Q5NTM0ZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjE1MCIgcj0iMzUiIGZpbGw9IiMzNDk4ZGIiLz48dGV4dCB4PSI0MDAiIHk9IjMwMCIgZmlsbD0iI2ZmZmZmZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4Ij5EZW1vIEZpbHRyZXMgQ1NTPC90ZXh0Pjx0ZXh0IHg9IjQwMCIgeT0iMzMwIiBmaWxsPSIjOWJkNmQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPkltYWdlIFNWRyBkZSBzZWNvdXJzPC90ZXh0Pjwvc3ZnPg==';
+
+    // Palettes de couleurs
+    const shapeColors = [
+        ['#7b61b8', '#d9534f'],
+        ['#3498db', '#2ecc71'],
+        ['#f39c12', '#8e44ad'],
+        ['#1abc9c', '#e67e22']
+    ];
+    
+    const interactiveColors = [
+        ['#3498db', '#e74c3c', '#2ecc71'],
+        ['#9b59b6', '#f39c12', '#1abc9c'],
+        ['#e74c3c', '#3498db', '#f39c12'],
+        ['#2ecc71', '#8e44ad', '#e67e22']
+    ];
+
+    // Variables d'état
+    let currentColorIndex = 0;
+    let currentInteractiveColorIndex = 0;
+    let currentFilters = [];
+    let combinationsTried = 0;
+    let activeFilters = {
+        blur: '0px',
+        grayscale: '0%',
+        invert: '0%'
+    };
+
+    // Obtenir les éléments DOM
+    const filterExamples = document.querySelectorAll('.filter-example');
+    const blurDemos = document.querySelectorAll('.blur-demo');
+    const grayscaleDemos = document.querySelectorAll('.grayscale-demo');
+    const invertDemos = document.querySelectorAll('.invert-demo');
+    const interactiveImage = document.getElementById('interactive-image');
+    const interactiveShapes = document.querySelectorAll('.interactive-shape');
+    const cssOutput = document.getElementById('css-output');
+    const combinationCode = document.getElementById('combination-code');
+    const changeAllColorsBtn = document.getElementById('change-all-colors');
+    const resetPlaygroundBtn = document.getElementById('reset-playground');
+    const syntaxBtn = document.getElementById('show-syntax');
+    const syntaxModal = document.getElementById('syntax-modal');
+    const closeSyntax = document.getElementById('close-syntax');
+    const watermark = document.getElementById('watermark');
+    const creatorMessage = document.getElementById('creator-message');
+    
+    // Éléments des curseurs
+    const blurSlider = document.getElementById('blur-slider');
+    const blurValue = document.getElementById('blur-value');
+    const grayscaleSlider = document.getElementById('grayscale-slider');
+    const grayscaleValue = document.getElementById('grayscale-value');
+    const invertSlider = document.getElementById('invert-slider');
+    const invertValue = document.getElementById('invert-value');
+    
+    const interactiveBlurSlider = document.getElementById('interactive-blur-slider');
+    const interactiveBlurValue = document.getElementById('interactive-blur-value');
+    const interactiveGrayscaleSlider = document.getElementById('interactive-grayscale-slider');
+    const interactiveGrayscaleValue = document.getElementById('interactive-grayscale-value');
+    const interactiveInvertSlider = document.getElementById('interactive-invert-slider');
+    const interactiveInvertValue = document.getElementById('interactive-invert-value');
+    
+    // Éléments des statistiques
+    const activeFiltersElement = document.getElementById('active-filters');
+    const filterIntensityElement = document.getElementById('filter-intensity');
+    const combinationsTriedElement = document.getElementById('combinations-tried');
+
+    // Vérifier la connexion internet
+    function checkInternetConnection() {
+        return navigator.onLine;
+    }
+
+    // Initialiser les états actifs
+    function initializeActiveStates() {
+        document.querySelectorAll('.filter-example[data-value="0px"], .filter-example[data-value="0%"]').forEach(btn => {
+            btn.classList.add('active-filter');
+        });
+        console.log('États actifs initialisés');
+    }
+
+    // Fonction de cycle d'images avec images réelles
+    function startImageCycling() {
+        let idx = 0;
+        
+        // Vérifier d'abord si on a internet
+        if (!checkInternetConnection()) {
+            console.log('Pas de connexion internet, utilisation des images SVG de secours');
+            // Utiliser les SVG de secours pour toutes les images
+            const allImages = document.querySelectorAll('img');
+            allImages.forEach(img => {
+                if (img.classList.contains('demo-image') || img.id === 'interactive-image' || img.classList.contains('gallery-image')) {
+                    img.src = fallbackSVG;
+                }
+            });
+            return; // Arrêter le cycle d'images
+        }
+        
+        console.log('Connexion internet détectée, chargement des images réelles');
+        
+        // Précharger toutes les images
+        imageUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+        
+        galleryImageUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+        
+        // Cycle toutes les 6 secondes (6000ms)
+        setInterval(() => {
+            idx = (idx + 1) % imageUrls.length;
+            const nextImageUrl = imageUrls[idx] + '&t=' + Date.now();
+            const nextGalleryImageUrl = galleryImageUrls[idx] + '&t=' + Date.now();
+            
+            console.log('Changement d\'image vers l\'index:', idx);
+            
+            // Faire un fade out
+            const allDemoImages = document.querySelectorAll('.demo-image');
+            allDemoImages.forEach(img => {
+                img.style.opacity = '0';
+            });
+            
+            interactiveImage.style.opacity = '0';
+            
+            // Attendre un peu puis changer les images
+            setTimeout(() => {
+                // Changer les images de démonstration
+                allDemoImages.forEach(img => {
+                    img.src = nextImageUrl;
+                    img.style.opacity = '1';
+                });
+                
+                // Changer l'image interactive
+                interactiveImage.src = nextImageUrl;
+                interactiveImage.style.opacity = '1';
+                
+                // Changer les images de la galerie (une seule à la fois)
+                const galleryImages = document.querySelectorAll('.gallery-image');
+                galleryImages.forEach((img, index) => {
+                    // Utiliser une image différente pour chaque élément de galerie
+                    const galleryIdx = (idx + index) % galleryImageUrls.length;
+                    img.src = galleryImageUrls[galleryIdx] + '&t=' + Date.now();
+                });
+                
+            }, 300); // Délai pour l'animation de fade
+        }, 6000); // Changement toutes les 6 secondes
+    }
+
+    // Changer les couleurs des formes
+    function changeShapeColors(type) {
+        console.log('Changement de couleurs pour :', type);
+        
+        if (type === 'all') {
+            const colors = interactiveColors[currentInteractiveColorIndex];
+            interactiveShapes[0].style.background = colors[0];
+            interactiveShapes[1].style.background = colors[1];
+            interactiveShapes[2].style.borderBottomColor = colors[2];
+            currentInteractiveColorIndex = (currentInteractiveColorIndex + 1) % interactiveColors.length;
+        } else {
+            const shapes = document.querySelectorAll(`.${type}-demo.shape`);
+            if (shapes.length >= 2) {
+                const colors = shapeColors[currentColorIndex];
+                shapes[0].style.background = colors[0];
+                shapes[1].style.background = colors[1];
+                currentColorIndex = (currentColorIndex + 1) % shapeColors.length;
+            }
+        }
+    }
+
+    // Appliquer les filtres aux démos
+    function applyFilterToDemos(filterType, value) {
+        console.log('Application du filtre :', filterType, value);
+        
+        let elements;
+        switch(filterType) {
+            case 'blur': 
+                elements = blurDemos; 
+                activeFilters.blur = value;
+                break;
+            case 'grayscale': 
+                elements = grayscaleDemos; 
+                activeFilters.grayscale = value;
+                break;
+            case 'invert': 
+                elements = invertDemos; 
+                activeFilters.invert = value;
+                break;
+            default: 
+                return;
+        }
+        
+        elements.forEach(el => {
+            el.style.filter = `${filterType}(${value})`;
+        });
+        
+        // Mettre à jour les exemples de code
+        updateCodeExamples();
+    }
+
+    // Mettre à jour les exemples de code
+    function updateCodeExamples() {
+        const blurCode = document.getElementById('blur-code');
+        const grayscaleCode = document.getElementById('grayscale-code');
+        const invertCode = document.getElementById('invert-code');
+        
+        blurCode.innerHTML = `/* Appliquer un blur aux éléments */\n.element {\n  filter: blur(${activeFilters.blur});\n}`;
+        grayscaleCode.innerHTML = `/* Appliquer grayscale aux éléments */\n.element { \n  filter: grayscale(${activeFilters.grayscale}); \n}`;
+        invertCode.innerHTML = `/* Appliquer invert aux éléments */\n.element { \n  filter: invert(${activeFilters.invert}); \n}`;
+        
+        // Ajouter l'effet de surbrillance
+        blurCode.style.background = 'rgba(14,165,164,.1)';
+        grayscaleCode.style.background = 'rgba(14,165,164,.1)';
+        invertCode.style.background = 'rgba(14,165,164,.1)';
+        
+        setTimeout(() => {
+            blurCode.style.background = 'rgba(0,0,0,.5)';
+            grayscaleCode.style.background = 'rgba(0,0,0,.5)';
+            invertCode.style.background = 'rgba(0,0,0,.5)';
+        }, 500);
+    }
+
+    // Mettre à jour les éléments interactifs
+    function updateInteractiveElements() {
+        const filterString = currentFilters.join(' ');
+        console.log('Mise à jour des éléments interactifs avec le filtre :', filterString);
+        
+        interactiveImage.style.filter = filterString || 'none';
+        interactiveShapes.forEach(s => s.style.filter = filterString || 'none');
+        cssOutput.textContent = `filter: ${filterString || 'none'};`;
+        combinationCode.textContent = `filter: ${filterString || 'none'};`;
+        
+        // Mettre à jour les statistiques
+        updateStats();
+    }
+    
+    // Mettre à jour les statistiques
+    function updateStats() {
+        const activeCount = currentFilters.length;
+        activeFiltersElement.textContent = activeCount;
+        
+        // Calculer l'intensité (simplifié)
+        let intensity = 0;
+        currentFilters.forEach(filter => {
+            if (filter.includes('blur')) {
+                const value = parseInt(filter.match(/\d+/)[0]);
+                intensity += Math.min(value * 5, 100);
+            } else if (filter.includes('grayscale') || filter.includes('invert')) {
+                const value = parseInt(filter.match(/\d+/)[0]);
+                intensity += value;
+            } else {
+                intensity += 50;
+            }
+        });
+        
+        intensity = Math.min(intensity, 100);
+        filterIntensityElement.textContent = `${intensity}%`;
+        
+        // Mettre à jour les combinaisons essayées
+        if (activeCount > 0) {
+            combinationsTried++;
+            combinationsTriedElement.textContent = combinationsTried;
+        }
+    }
+    
+    // Fonctionnalité du filigrane
+    function showCreatorMessage() {
+        creatorMessage.classList.add('show');
+        
+        // Masquer après 5 secondes
+        setTimeout(() => {
+            creatorMessage.classList.remove('show');
+        }, 5000);
+    }
+
+    // Écouteurs d'événements pour les boutons de filtre
+    filterExamples.forEach(button => {
+        button.addEventListener('click', function() {
+            const filterType = this.getAttribute('data-filter');
+            const value = this.getAttribute('data-value');
+            
+            console.log('Bouton de filtre cliqué :', filterType, value);
+
+            // Supprimer la classe active des boutons frères
+            const parent = this.parentElement;
+            parent.querySelectorAll('.filter-example').forEach(s => {
+                s.classList.remove('active-filter');
+            });
+            this.classList.add('active-filter');
+
+            if (filterType === 'all') {
+                if (value === 'none') {
+                    currentFilters = [];
+                } else {
+                    // Remplacer le filtre du même nom
+                    const name = value.split('(')[0];
+                    currentFilters = currentFilters.filter(f => !f.startsWith(name));
+                    currentFilters.push(value);
+                }
+                updateInteractiveElements();
+            } else {
+                applyFilterToDemos(filterType, value);
+            }
+        });
+    });
+    
+    // Écouteurs d'événements pour les curseurs
+    blurSlider.addEventListener('input', function() {
+        const value = this.value + 'px';
+        blurValue.textContent = value;
+        applyFilterToDemos('blur', value);
+        
+        // Mettre à jour le bouton actif
+        document.querySelectorAll('.filter-example[data-filter="blur"]').forEach(btn => {
+            btn.classList.remove('active-filter');
+        });
+    });
+    
+    grayscaleSlider.addEventListener('input', function() {
+        const value = this.value + '%';
+        grayscaleValue.textContent = value;
+        applyFilterToDemos('grayscale', value);
+        
+        // Mettre à jour le bouton actif
+        document.querySelectorAll('.filter-example[data-filter="grayscale"]').forEach(btn => {
+            btn.classList.remove('active-filter');
+        });
+    });
+    
+    invertSlider.addEventListener('input', function() {
+        const value = this.value + '%';
+        invertValue.textContent = value;
+        applyFilterToDemos('invert', value);
+        
+        // Mettre à jour le bouton actif
+        document.querySelectorAll('.filter-example[data-filter="invert"]').forEach(btn => {
+            btn.classList.remove('active-filter');
+        });
+    });
+    
+    // Curseurs du terrain de jeu interactif
+    interactiveBlurSlider.addEventListener('input', function() {
+        const value = this.value + 'px';
+        interactiveBlurValue.textContent = value;
+        
+        // Mettre à jour le filtre blur dans currentFilters
+        currentFilters = currentFilters.filter(f => !f.startsWith('blur'));
+        if (this.value > 0) {
+            currentFilters.push(`blur(${value})`);
+        }
+        updateInteractiveElements();
+    });
+    
+    interactiveGrayscaleSlider.addEventListener('input', function() {
+        const value = this.value + '%';
+        interactiveGrayscaleValue.textContent = value;
+        
+        // Mettre à jour le filtre grayscale dans currentFilters
+        currentFilters = currentFilters.filter(f => !f.startsWith('grayscale'));
+        if (this.value > 0) {
+            currentFilters.push(`grayscale(${value})`);
+        }
+        updateInteractiveElements();
+    });
+    
+    interactiveInvertSlider.addEventListener('input', function() {
+        const value = this.value + '%';
+        interactiveInvertValue.textContent = value;
+        
+        // Mettre à jour le filtre invert dans currentFilters
+        currentFilters = currentFilters.filter(f => !f.startsWith('invert'));
+        if (this.value > 0) {
+            currentFilters.push(`invert(${value})`);
+        }
+        updateInteractiveElements();
+    });
+
+    // Écouteurs d'événements pour les boutons de changement de couleur
+    document.querySelectorAll('.color-change-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const shapesType = this.getAttribute('data-shapes');
+            changeShapeColors(shapesType || 'all');
+        });
+    });
+
+    // Écouteur d'événement pour le bouton changer toutes les couleurs
+    changeAllColorsBtn.addEventListener('click', () => {
+        changeShapeColors('all');
+    });
+
+    // Écouteur d'événement pour le bouton réinitialiser le terrain de jeu
+    resetPlaygroundBtn.addEventListener('click', () => {
+        console.log('Réinitialisation du terrain de jeu');
+        currentFilters = [];
+        interactiveImage.style.filter = 'none';
+        interactiveShapes.forEach(s => s.style.filter = 'none');
+        cssOutput.textContent = 'filter: none;';
+        combinationCode.textContent = 'filter: none;';
+        
+        // Réinitialiser les curseurs
+        blurSlider.value = 0;
+        blurValue.textContent = '0px';
+        grayscaleSlider.value = 0;
+        grayscaleValue.textContent = '0%';
+        invertSlider.value = 0;
+        invertValue.textContent = '0%';
+        
+        interactiveBlurSlider.value = 0;
+        interactiveBlurValue.textContent = '0px';
+        interactiveGrayscaleSlider.value = 0;
+        interactiveGrayscaleValue.textContent = '0%';
+        interactiveInvertSlider.value = 0;
+        interactiveInvertValue.textContent = '0%';
+        
+        // Réinitialiser les sections de filtre individuelles
+        applyFilterToDemos('blur', '0px');
+        applyFilterToDemos('grayscale', '0%');
+        applyFilterToDemos('invert', '0%');
+        
+        // Réinitialiser les états actifs
+        document.querySelectorAll('.filter-example').forEach(btn => {
+            btn.classList.remove('active-filter');
+        });
+        initializeActiveStates();
+        
+        // Réinitialiser les statistiques
+        updateStats();
+    });
+
+    // Fonctionnalité modale
+    syntaxBtn.addEventListener('click', () => {
+        syntaxModal.style.display = 'block';
+    });
+
+    closeSyntax.addEventListener('click', () => {
+        syntaxModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === syntaxModal) {
+            syntaxModal.style.display = 'none';
+        }
+    });
+    
+    // Événement de clic sur le filigrane
+    watermark.addEventListener('click', showCreatorMessage);
+
+    // Initialiser la page
+    initializeActiveStates();
+    startImageCycling();
+    updateStats();
+    
+    console.log('Page des filtres initialisée avec succès');
+});
+</script>
+</body>
+</html>
